@@ -1,0 +1,37 @@
+ - name: Copy apache2 config
+   template:
+     src: ./templates/sites_enabled.conf.j2
+     dest: '/etc/apache2/sites-available/{{ app_name }}.conf'
+   become: true
+
+ - name: generate env file
+   template:
+     dest: "{{ destination }}/{{ app_name }}/.env"
+     src: templates/.env.j2
+   become: true
+
+ - name: Generate app key
+   shell: sudo php artisan key:generate
+   args: 
+     chdir: "{{ destination }}/{{ app_name }}"
+
+ - name: Migrate DB
+   shell: php artisan migrate --seed --force
+   become: yes
+   args:
+     chdir: "{{ destination }}/{{ app_name }}"
+
+ - name: Diable apache2 default site
+   shell: a2dissite 000-default.conf
+   become: true
+
+ - name: Enable app_name.conf
+   shell: a2ensite {{ app_name }}.conf
+   become: true
+
+ - name: Enable apache rewrite module
+   command: a2enmod rewrite
+   become: true
+
+   notify: 
+     - Restart apache2

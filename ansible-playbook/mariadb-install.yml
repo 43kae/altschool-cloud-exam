@@ -1,0 +1,33 @@
+- name: Installing Mysql and dependencies
+  apt:
+    pkg:
+      - mariadb-server
+      - mariadb-client
+      - python3-mysqldb
+      - libmariadb-dev
+    state: present
+  become: true
+  notify:
+    - Start mysql
+- name: creating mysql user (kae_db)
+  become: true
+  mysql_user:
+    name: "{{db_user}}"
+    password: "{{db_pass}}"
+    priv: "*.*:ALL"
+    host: "%"
+    state: present
+- name: creating demoapp_db
+  become: true
+  mysql_db:
+    name: "{{db_name}}"
+    state: present
+- name: Enable remote login to mysql
+  become: true
+  lineinfile:
+    path: /etc/mysql/my.cnf
+    regexp: "^bind-address"
+    line: "bind-address = 0.0.0.0"
+    backup: yes
+  notify:
+    - Restart mysql

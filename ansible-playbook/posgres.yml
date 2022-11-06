@@ -1,0 +1,14 @@
+ - name: Copy PSQL folder
+   copy: 
+     src: ./psql
+     dest: /home/$USER/psql
+     mode: '0775'
+   register: script_copied
+
+ - name: Run PSQL shell installer
+   script: ./psql/psql_install.sh
+   register: script_run
+   when: script_copied.changed
+
+ - name: Show result
+   debug: msg="{{ script_run.stdout}}"

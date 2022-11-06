@@ -1,0 +1,24 @@
+   - name: Upgrade System
+     become: true
+     apt: 
+       update_cache: yes
+       upgrade: dist
+
+   - name: set timezone to Africa/Lagos
+     become: true
+     timezone:
+       name: Africa/Lagos
+
+   - name: install prerequisites
+     become: yes
+     apt:
+       pkg:
+       - apache2
+       - software-properties-common
+       - ca-certificates
+       - gnupg
+       - git-all
+       - avahi-daemon
+       - libnss-mdns
+       - net-tools
+

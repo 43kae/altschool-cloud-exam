@@ -1,0 +1,63 @@
+---
+- name: Setup Server
+  hosts: azure
+  vars_files: ./vars/main.yml
+
+  tasks:
+   - name: Prepare Server && Install Apache Dependencies
+     import_tasks: apache2.yml
+
+   - name: Install PHP & dependencies
+     import_tasks: php.yml
+
+   - name: Install Composer
+     import_tasks: composer.yml
+
+   - name: Checkout app folder from github
+     import_tasks: git.yml
+
+   - name: Install & Setup MYSQL
+     import_tasks: mariadb-install.yml
+
+   - name: Final Setup
+     import_tasks: final.yml
+
+   - name: Activate SSL Cert
+     import_tasks: cert.yml
+
+#   - name: Install PostgreSQL
+#     import_tasks: postgres.yml  
+
+  handlers:
+    - name: Restart mysql
+      become: yes
+      service:
+        name: mysql
+        state: restarted
+
+    - name: Start mysql
+      become: yes
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Restart apache2
+      become: true
+      service:
+        name: apache2
+        state: restarted
+        daemon_reload: yes
+
+    - name: Start apache2
+      become: true
+      service: 
+        name: apache2
+        state: started
+
+    - name: Stop apache2
+      become: true
+      service:
+        name: apache2
+        state: stopped
+

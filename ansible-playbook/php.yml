@@ -1,0 +1,20 @@
+- name: Add apt key
+  become: yes
+  get_url:
+    url: https://packages.sury.org/php/apt.gpg
+    dest: /etc/apt/trusted.gpg.d
+
+- name: add apt repository information
+  shell: echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/sury-php.list
+  become: yes
+
+- name: Install php & dependencies
+  become: yes
+  apt:
+    name: "{{item}}"
+    force_apt_get: yes
+    update_cache: yes
+  loop:
+    [
+      "php8.1, libapache2-mod-php, php8.1-dev, php8.1-zip, php8.1-curl, php8.1-mbstring, php8.1-mysql, php8.1-gd, php8.1-xml",
+    ]

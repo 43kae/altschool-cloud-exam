@@ -1,0 +1,15 @@
+[azure]
+13.81.0.22
+
+[vagrant]
+192.168.56.23
+
+[azure:vars]
+ansible_user=azuredebian
+ansible_ssh_private_key_file=./altschool-exam_key.pem
+ansible_password=omokolade
+
+[vagrant:vars]
+ansible_user=vagrant
+ansible_password=vagrant
+ansible_ssh_private_key_file=~/.ssh/id_rsa

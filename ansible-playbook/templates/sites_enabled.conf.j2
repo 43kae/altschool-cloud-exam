@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  ServerName localhost
+  DocumentRoot {{ destination }}/{{ app_name }}/public
+  <Directory {{ destination }}/{{ app_name }}>
+    AllowOverride all
+    Require all granted
+  </Directory>
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>

@@ -1,0 +1,21 @@
+  - name: Checkout latest code from github
+    git:
+      repo: 'https://github.com/f1amy/laravel-realworld-example-app.git'
+      dest: /home/$USER/{{ app_name }}
+      force: yes
+      accept_hostkey: yes   
+
+  - name: Install Composer
+    composer:
+      command: install
+      working_dir: /home/$USER/{{ app_name }}
+      no_dev: no
+
+  - name: Change file ownership
+    shell: sudo chown -R $USER:www-data /home/$USER/{{ app_name }}
+
+  - name: Change file permissions
+    shell: sudo chmod -R 0755 /home/$USER/{{ app_name }} && sudo chmod -R 0775 /home/$USER/{{ app_name }}/storage
+ 
+  - name: Move file to dest
+    shell: sudo mv /home/$USER/{{ app_name }} /var/www
